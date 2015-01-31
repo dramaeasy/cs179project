@@ -3,36 +3,37 @@ using System.Collections;
 
 public class EnemyColor : MonoBehaviour {
 
+	public float blinkTime = 1f;
+
 	SkinnedMeshRenderer mesh;
-	float blinkTime = 1f;
+	EnemyAI enemy1; //Reference to the EnemyAI script to read powerUpActive variable
 	float timer = 0f;
-	Color redd;
-	// Use this for initialization
-	void Start () 
+
+	void Awake () 
 	{
 		mesh = GetComponent<SkinnedMeshRenderer> ();
-		redd = new Color (1, 0, 0, 1);
+		enemy1 = GetComponentInParent<EnemyAI> ();
 	}
-	
-	// Update is called once per frame
+
 	void Update () 
 	{
-		timer += Time.deltaTime;
-
-		if(timer >= blinkTime)
+		if(enemy1.powerUpActive) //blink between white and blue if player has picked up the power up
 		{
-			if(mesh.renderer.material.color == Color.blue)
-			{
-				Debug.Log("im  red");
-				mesh.material.color = Color.white;
-			}
-			else
-			{
-				Debug.Log("Im blue");
-				mesh.material.color = Color.blue;
-			}
+			timer += Time.deltaTime;
 
-			timer = 0f;
+			if(timer >= blinkTime)
+			{
+				if(mesh.renderer.material.color == Color.blue)
+				{
+					mesh.material.color = Color.white;
+				}
+				else
+				{
+					mesh.material.color = Color.blue;
+				}
+
+				timer = 0f;
+			}
 		}
 	}
 }

@@ -1182,6 +1182,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56a9c034b0e78474b8e6a7ca4125b645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  blinkTime: .300000012
 --- !u!1 &907649592
 GameObject:
   m_ObjectHideFlags: 0
@@ -1872,6 +1873,7 @@ MonoBehaviour:
   - {fileID: 2026363966}
   - {fileID: 892772752}
   - {fileID: 1065975633}
+  powerUpActive: 0
 --- !u!135 &1476201860
 SphereCollider:
   m_ObjectHideFlags: 0

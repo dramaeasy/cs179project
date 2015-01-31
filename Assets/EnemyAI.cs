@@ -8,6 +8,9 @@ public class EnemyAI : MonoBehaviour {
 	public float chaseWaitTime = 2f;
 	public float patrolWaitTime = 1f;
 	public Transform [] patrolWaypoints;
+	public bool powerUpActive;
+	public float powerUpTime = 7f;
+	public float powerUpTimer = 0f;
 
 	private Transform enemyLoc;
 	private EnemySight enemySight;                         
@@ -17,7 +20,8 @@ public class EnemyAI : MonoBehaviour {
 	private PlayerHealth playerHealth;                     
 	private float chaseTimer;                             
 	private float patrolTimer;                          
-	private int wayPointIndex;                             
+	private int wayPointIndex;
+
 
 	void Awake()
 	{
@@ -28,41 +32,57 @@ public class EnemyAI : MonoBehaviour {
 		playerHealth = player.GetComponent<PlayerHealth> ();
 		anim = GetComponent<Animator> ();
 		wayPointIndex = 0;
+		powerUpActive = true;
 
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
 
-	void Update()
+	void Update() //state machine for AI
 	{
-		if(enemySight.playerInSight || enemySight.playerHeard)
+		if(powerUpActive) //State 1: run away from player because player picked up power up
 		{
-			Chasing();
-			anim.SetBool("playerInSight", true);
+			powerUpTimer += Time.deltaTime;
+
+			if(powerUpTimer >= powerUpTime)
+			{
+				powerUpActive = false;
+				powerUpTimer = 0f;
+			}
+			else
+			{
+				RunAway();
+				anim.SetBool("playerInSight", true); //set running animation
+			}
 		}
-		else
+		else if(enemySight.playerInSight || enemySight.playerHeard) //State 2: chase player because he is close
 		{
-			Patrolling();
-			anim.SetBool("playerInSight", false);
+			Chase();
+			anim.SetBool("playerInSight", true); //set running animation
+		}
+		else //State 3: patrol waypoints
+		{
+			Patroll();
+			anim.SetBool("playerInSight", false); //set running animation
 		}
 	}
 
-	void Chasing()
+	void Chase()
 	{
 		nav.destination = player.position;
 		nav.speed = chaseSpeed;
 	}
 
-	void Patrolling()
+	void Patroll()
 	{
 		nav.speed = patrolSpeed;
 
-		if(nav.remainingDistance < nav.stoppingDistance)
+		if(nav.remainingDistance < nav.stoppingDistance) //Enemy is close to the destination waypoint
 		{
 			patrolTimer += Time.deltaTime;
 
 			if(patrolTimer >= patrolWaitTime)
 			{
-				wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1);
+				wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
 				Debug.Log(wayPointIndex);
 
 				patrolTimer = 0f;
@@ -74,5 +94,26 @@ public class EnemyAI : MonoBehaviour {
 		}
 
 		nav.destination = patrolWaypoints[wayPointIndex].position;
+	}
+
+	void RunAway()
+	{
+		nav.speed = chaseSpeed;
+
+		int farthestWayPointIndex = 0;
+		float farthestAway = 0f;
+
+		for(int i = 0; i < patrolWaypoints.Length - 1; i++) //Find the farthest waypoint from Player to run to
+		{
+			float distance = Vector3.Distance(patrolWaypoints[i].position, player.position);
+
+			if(distance > farthestAway)
+			{
+				farthestAway = distance;
+				farthestWayPointIndex = i;
+			}
+		}
+
+		nav.destination = patrolWaypoints [farthestWayPointIndex].position;
 	}
 }

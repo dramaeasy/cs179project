@@ -23,12 +23,7 @@ public class EnemySight : MonoBehaviour
 		playerInSight = false;
 	}
 
-	void Update()
-	{
-
-	}
-
-	void OnTriggerStay(Collider other)
+	void OnTriggerStay(Collider other) //Will be called every frame as long as player is in enemy sphere collider
 	{
 		if (other.gameObject == player) 
 		{
