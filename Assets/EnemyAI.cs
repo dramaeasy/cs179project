@@ -62,14 +62,8 @@ public class EnemyAI : MonoBehaviour {
 
 			if(patrolTimer >= patrolWaitTime)
 			{
-				if(wayPointIndex == patrolWaypoints.Length - 1)
-				{
-					wayPointIndex = 0;
-				}
-				else
-				{
-					wayPointIndex++;
-				}
+				wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1);
+				Debug.Log(wayPointIndex);
 
 				patrolTimer = 0f;
 			}
@@ -79,6 +73,6 @@ public class EnemyAI : MonoBehaviour {
 			patrolTimer = 0f;
 		}
 
-			nav.destination = patrolWaypoints[wayPointIndex].position;
+		nav.destination = patrolWaypoints[wayPointIndex].position;
 	}
 }

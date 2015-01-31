@@ -58,7 +58,7 @@ public class EnemySight : MonoBehaviour
 
 			if(CalculatePathLength(player.transform.position) <= 11.0)
 			{
-				playerHeard = true;
+				//playerHeard = true;
 			}
 			else
 			{
