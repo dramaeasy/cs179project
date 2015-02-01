@@ -4,7 +4,7 @@ using System.Collections;
 public class Flashlight : MonoBehaviour {
 
 	Light flashlightSource;
-	bool lightOn = true;
+	bool lightOn = false;
 	public float drainPower = 0.1f;
 	public float batteryLife = 0.0f;
 	public float maxBatteryLife = 2.0f;
@@ -16,6 +16,7 @@ public class Flashlight : MonoBehaviour {
 	void Start () {
 		batteryLife = maxBatteryLife;
 		flashlightSource = GetComponent<Light> ();
+		flashlightSource.enabled = false;
 	}
 	
 	// Update is called once per frame
