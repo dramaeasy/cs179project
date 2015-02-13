@@ -8,24 +8,27 @@ public class EnemyColor : MonoBehaviour {
 	MeshRenderer mesh;
 	EnemyAI enemy1; //Reference to the EnemyAI script to read powerUpActive variable
 	float timer = 0f;
+	Transform trans;
 
 	void Awake () 
 	{
 		mesh = GetComponent<MeshRenderer> ();
 		enemy1 = GetComponentInParent<EnemyAI> ();
+		trans = GetComponent<Transform> ();
 	}
 
 	void Update () 
 	{
-		if(enemy1.powerUpActive) //blink between white and blue if player has picked up the power up
+		if(Select.powerup_got && !EnemyAI.enemyDead) //blink between red and blue if player has picked up the power up
 		{
+			trans.localScale = new Vector3(3f, 3f, 3f);
 			timer += Time.deltaTime;
 
 			if(timer >= blinkTime)
 			{
 				if(mesh.renderer.material.color == Color.blue)
 				{
-					mesh.material.color = Color.white;
+					mesh.material.color = Color.blue;
 				}
 				else
 				{
@@ -34,6 +37,16 @@ public class EnemyColor : MonoBehaviour {
 
 				timer = 0f;
 			}
+		}
+		else if(EnemyAI.enemyDead)
+		{
+			trans.localScale = new Vector3(1f, 1f, 1f);
+			mesh.renderer.material.color = Color.green;
+		}
+		else
+		{
+			trans.localScale = new Vector3(3f, 3f, 3f);
+			mesh.renderer.material.color = Color.red;
 		}
 	}
 }

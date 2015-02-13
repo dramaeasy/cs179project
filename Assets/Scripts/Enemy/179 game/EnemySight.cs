@@ -6,12 +6,15 @@ public class EnemySight : MonoBehaviour
 	public float fieldOfViewAngle = 110f;
 	public bool playerInSight;
 	public bool playerHeard;
+	public ResetPlayer reset;
 
+	private GameObject enemy;
 	private NavMeshAgent nav;
 	private SphereCollider col;
 	private Animator anim;
 	private GameObject player;
 	private PlayerHealth playerHealth;
+	private Transform enemyLoc;
 
 	void Awake()
 	{
@@ -21,11 +24,15 @@ public class EnemySight : MonoBehaviour
 		player = GameObject.FindGameObjectWithTag ("Player");
 		playerHealth = player.GetComponent<PlayerHealth> ();
 		playerInSight = false;
+		enemy = GameObject.FindGameObjectWithTag ("Player");
+		reset = enemy.GetComponent<ResetPlayer> ();
+		enemyLoc = GetComponent<Transform> ();
 	}
 
 	void OnTriggerStay(Collider other) //Will be called every frame as long as player is in enemy sphere collider
 	{
-		if (other.gameObject == player) 
+
+		if (other.gameObject == player && !EnemyAI.enemyDead) 
 		{
 			playerInSight = false;
 
@@ -52,13 +59,36 @@ public class EnemySight : MonoBehaviour
 
 			if(CalculatePathLength(player.transform.position) <= 11.0)
 			{
-				//playerHeard = true;
+				playerHeard = true;
 			}
 			else
 			{
 				playerHeard = false;
 			}
 
+		}
+
+		if(Vector3.Distance(other.transform.position, transform.position) <= 3)
+		{
+			if(Select.powerup_got)
+			{
+				EnemyAI.enemyDead = true;
+			}
+			else
+			{
+				PlayerLives.lives--;
+
+				if(PlayerLives.lives <= 0)
+				{
+					PlayerLives.lives = 0;
+					Application.LoadLevel("GameOverLevel");
+
+				}
+
+				reset.ResetPlayerPosition();
+				nav.enabled = false;
+				enemyLoc.position = new Vector3(0.22f, 0.32f, -1f);
+			}
 		}
 	}
 
@@ -97,5 +127,13 @@ public class EnemySight : MonoBehaviour
 		}
 
 		return pathLength;
+	}
+
+	void Update()
+	{
+		if(!nav.enabled)
+		{
+			nav.enabled = true;
+		}
 	}
 }

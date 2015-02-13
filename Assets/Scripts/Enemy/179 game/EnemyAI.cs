@@ -7,11 +7,14 @@ public class EnemyAI : MonoBehaviour {
 	public float chaseSpeed = 2f;
 	public float chaseWaitTime = 2f;
 	public float patrolWaitTime = 1f;
-	public Transform [] patrolWaypoints;
 	public bool powerUpActive;
 	public float powerUpTime = 7f;
-	public float powerUpTimer = 0f;
 	public float fieldOfViewAngle = 110f;
+	public float enemyDeathTime = 10f;
+	public static bool enemyDead = false;
+	public Vector3 enemySpawn;
+	public Transform [] patrolWaypoints;
+	public static float powerUpTimer = 0f;
 	
 	private Transform enemyLoc;
 	private EnemySight enemySight;                         
@@ -22,6 +25,8 @@ public class EnemyAI : MonoBehaviour {
 	private float chaseTimer;                             
 	private float patrolTimer;                          
 	private int wayPointIndex;
+	private float enemyDeathTimer = 0f;
+
 	
 	
 	void Awake()
@@ -34,36 +39,71 @@ public class EnemyAI : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		wayPointIndex = 0;
 		powerUpActive = false;
+		enemySpawn = new Vector3 (0.22f, 0.32f, -1.7f);
+		powerUpTime = 10f;
+		powerUpTimer = powerUpTime;
 		
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
 	
 	void Update() //state machine for AI
 	{
-		if(powerUpActive) //State 1: run away from player because player picked up power up
+		if(enemyDead) //State 0: Run back to spawn point
 		{
-			powerUpTimer += Time.deltaTime;
-			
-			if(powerUpTimer >= powerUpTime)
+			enemyDeathTimer += Time.deltaTime;
+
+			if(enemyDeathTimer >= enemyDeathTime)
 			{
-				powerUpActive = false;
+				if(enemyLoc.position == enemySpawn && Select.powerup_got)
+				{
+					enemyDead = true; //Keep enemy dead until players powerup runs out
+				}
+				else
+				{
+					enemyDeathTime = 0f;
+					enemyDead = false;
+				}
+			}
+			else
+			{
+				nav.SetDestination(enemySpawn);
+			}
+
+			powerUpTimer -= Time.deltaTime;
+
+			if(Select.powerup_got)
+			{
+				if(powerUpTimer <= 0)
+				{
+					Select.powerup_got = false;
+					powerUpTimer = 0f;
+				}
+			}
+		}
+		else if(Select.powerup_got) //State 1: run away from player because player picked up power up
+		{
+			powerUpTimer -= Time.deltaTime;
+	
+			if(powerUpTimer <= 0)
+			{
+				Select.powerup_got = false;
 				powerUpTimer = 0f;
 			}
 			else
 			{
 				RunAway();
-				anim.SetBool("playerInSight", true); //set running animation
+				//anim.SetBool("playerInSight", true); //set running animation
 			}
 		}
 		else if(enemySight.playerInSight || enemySight.playerHeard) //State 2: chase player because he is close
 		{
 			Chase();
-			anim.SetBool("playerInSight", true); //set running animation
+		//	anim.SetBool("playerInSight", true); //set running animation
 		}
 		else //State 3: patrol waypoints
 		{
 			Patroll();
-			anim.SetBool("playerInSight", false); //set running animation
+			//anim.SetBool("playerInSight", false); //set running animation
 		}
 	}
 	
