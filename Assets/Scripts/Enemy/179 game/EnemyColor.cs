@@ -21,7 +21,7 @@ public class EnemyColor : MonoBehaviour {
 	{
 		if(Select.powerup_got && !EnemyAI.enemyDead) //blink between red and blue if player has picked up the power up
 		{
-			trans.localScale = new Vector3(3f, 3f, 3f);
+			trans.localScale = new Vector3(6f, 6f, 6f);
 			timer += Time.deltaTime;
 
 			if(timer >= blinkTime)
@@ -45,7 +45,7 @@ public class EnemyColor : MonoBehaviour {
 		}
 		else
 		{
-			trans.localScale = new Vector3(3f, 3f, 3f);
+			trans.localScale = new Vector3(6f, 6f, 6f);
 			mesh.renderer.material.color = Color.red;
 		}
 	}

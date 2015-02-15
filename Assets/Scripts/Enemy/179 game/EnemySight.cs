@@ -39,6 +39,7 @@ public class EnemySight : MonoBehaviour
 			Vector3 direction = other.transform.position - transform.position; //Calculate vector from enemy to player
 			float angle = Vector3.Angle(direction, transform.forward); 
 
+			Debug.Log ("Angle:" + angle);
 			if(angle < fieldOfViewAngle * 0.5f) //Is player in cone in front of enemy?
 			{
 				RaycastHit hit; //Raycast to player to see if player is in line of sight
