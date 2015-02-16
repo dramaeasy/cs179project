@@ -77,7 +77,7 @@ public class EnemySight : MonoBehaviour
 			}
 			else
 			{
-				PlayerLives.lives--;
+				//PlayerLives.lives--;
 
 				if(PlayerLives.lives <= 0)
 				{
