@@ -13,7 +13,7 @@ public class PowerupUI : MonoBehaviour {
 	
 	void Update () 
 	{
-		int timeLeft = (int)EnemyAI.powerUpTimer;
+		int timeLeft = (int)PowerupListener.powerUpTimer;
 
 		if(timeLeft < 0)
 		{

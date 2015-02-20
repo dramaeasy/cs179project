@@ -4,7 +4,8 @@
 TagManager:
   tags:
   - PowerUp
-  - Enemy
+  - Ghost1
+  - Ghost2
   - 
   Builtin Layer 0: Default
   Builtin Layer 1: TransparentFX

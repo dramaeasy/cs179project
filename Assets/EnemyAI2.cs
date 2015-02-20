@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class EnemyAI : MonoBehaviour {
+public class EnemyAI2 : MonoBehaviour {
 	
 	public float patrolSpeed = 2f;
 	public float chaseSpeed = 2f;
@@ -13,9 +13,9 @@ public class EnemyAI : MonoBehaviour {
 	public bool enemyDead = false;
 	public Vector3 enemySpawn;
 	public Transform [] patrolWaypoints;
-
+	
 	private Transform enemyLoc;
-	private EnemySight enemySight;                         
+	private EnemySight2 enemySight;                         
 	private NavMeshAgent nav; 
 	private Animator anim;
 	private Transform player;                               
@@ -24,13 +24,13 @@ public class EnemyAI : MonoBehaviour {
 	private float patrolTimer;                          
 	private int wayPointIndex;
 	private float enemyDeathTimer = 0f;
-
+	
 	
 	
 	void Awake()
 	{
 		enemyLoc = GetComponent<Transform> ();
-		enemySight = GetComponent<EnemySight> ();
+		enemySight = GetComponent<EnemySight2> ();
 		nav = GetComponent<NavMeshAgent> ();
 		player = GameObject.FindGameObjectWithTag ("Player").transform;
 		playerHealth = player.GetComponent<PlayerHealth> ();
@@ -38,7 +38,7 @@ public class EnemyAI : MonoBehaviour {
 		wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
 		powerUpActive = false;
 		enemySpawn = new Vector3 (0.22f, 0.32f, -1.7f);
-
+		
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
 	
@@ -47,7 +47,7 @@ public class EnemyAI : MonoBehaviour {
 		if(enemyDead) //State 0: Run back to spawn point
 		{
 			enemyDeathTimer += Time.deltaTime;
-
+			
 			if(enemyDeathTimer >= enemyDeathTime)
 			{
 				if(enemyLoc.position == enemySpawn && Select.powerup_got)
@@ -73,7 +73,7 @@ public class EnemyAI : MonoBehaviour {
 		else if(enemySight.playerInSight || enemySight.playerHeard) //State 2: chase player because he is close
 		{
 			Chase();
-		//	anim.SetBool("playerInSight", true); //set running animation
+			//	anim.SetBool("playerInSight", true); //set running animation
 		}
 		else //State 3: patrol waypoints
 		{

@@ -11,13 +11,6 @@ public class power : MonoBehaviour {
 		player = GameObject.FindGameObjectWithTag ("Player");
 	}
 
-	public void OnPickupEnter(){
-
-		if (Select.powerup_got == false) {
-			Select.powerup_got = true; 
-		}
-	}
-
 	void OnTriggerEnter(Collider other)
 	{
 		if(other.gameObject == player)

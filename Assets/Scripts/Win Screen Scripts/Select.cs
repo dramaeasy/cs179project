@@ -22,10 +22,6 @@ public class Select : MonoBehaviour {
 				Debug.Log( puz_piece );
 
 			}
-			if ( hit.collider.gameObject.GetComponent<power>() != null )
-			{
-				hit.collider.gameObject.GetComponent<power>().OnPickupEnter();
-			}
 		}
 
 		
