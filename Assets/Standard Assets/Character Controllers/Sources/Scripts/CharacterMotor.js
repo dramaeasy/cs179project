@@ -332,6 +332,7 @@ function FixedUpdate () {
 }
 
 function Update () {
+
 	if (!useFixedUpdate)
 		UpdateFunction();
 }

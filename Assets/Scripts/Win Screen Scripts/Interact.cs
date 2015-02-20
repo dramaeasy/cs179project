@@ -5,6 +5,8 @@ public class Interact : MonoBehaviour {
 
 	private GameObject player;
 	private Light light;
+	public AudioSource audio;
+	bool pickedUp = false;
 
 	void Awake()
 	{
@@ -22,11 +24,28 @@ public class Interact : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.gameObject == player) 
+		if (other.gameObject == player || pickedUp) 
 		{
-			Select.puz_piece += 1;
-			DestroyObject(light);
-			DestroyObject(this.gameObject);
+			if(!pickedUp)
+			{
+				audio.Play();
+				renderer.enabled = false;
+				Select.puz_piece += 1;
+			}
+
+			pickedUp = true;
+		}
+	}
+
+	void Update()
+	{
+		if(pickedUp)
+		{		
+			if(!audio.isPlaying)
+			{
+				DestroyObject(light);
+				DestroyObject(this.gameObject);
+			}
 		}
 	}
 }

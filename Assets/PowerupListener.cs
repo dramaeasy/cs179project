@@ -2,13 +2,20 @@
 using System.Collections;
 
 public class PowerupListener : MonoBehaviour {
-
-	public static float powerUpTimer = 30f; //Duration of powerup 
+	public static float powerUpTime = 31f;
+	public static float powerUpTimer = powerUpTime; //Duration of powerup 
+	public AudioSource audio;
+	
 
 	void Update()
 	{
 		if(Select.powerup_got)
 		{
+			if(!audio.isPlaying)
+			{
+				audio.Play();
+			}
+
 			powerUpTimer -= Time.deltaTime;
 		
 				

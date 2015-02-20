@@ -16,6 +16,7 @@ public class power : MonoBehaviour {
 		if(other.gameObject == player)
 		{
 			Select.powerup_got = true;
+			PowerupListener.powerUpTimer = PowerupListener.powerUpTime;
 			DestroyObject(GameObject.FindGameObjectWithTag("PowerUp"));
 		}
 	}

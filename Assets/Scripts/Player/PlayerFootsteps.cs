@@ -7,7 +7,7 @@ public class PlayerFootsteps : MonoBehaviour {
 
 	bool step = true;
 	bool playing = false;
-	float audioLength = 0.5f;
+	float audioLength = 1.0f;
 	float elapTime = 0f;
 
 	void OnControllerColliderHit(ControllerColliderHit hit)

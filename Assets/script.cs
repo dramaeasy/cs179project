@@ -11,5 +11,9 @@ public class script : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+		if(Input.GetKey("return"))
+		{
+			Application.LoadLevel("HorrorGameOutsideLevel");
+		}
 	}
 }

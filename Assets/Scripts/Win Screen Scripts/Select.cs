@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Select : MonoBehaviour {
 
-	public static int totalPuzPieces = 6;
+	public static int totalPuzPieces = 42;
 	public static int puz_piece = 0;
 	public static bool powerup_got = false;
 	public RaycastHit hit;
