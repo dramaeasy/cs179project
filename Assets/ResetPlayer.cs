@@ -3,11 +3,15 @@ using System.Collections;
 
 public class ResetPlayer : MonoBehaviour {
 
+	public Transform playerSpawn;
+
 	Transform playerPos;
 
 	void Awake()
 	{
 		playerPos = GetComponent<Transform> ();
+
+		playerPos.position = playerSpawn.position;
 	}
 
 	public void ResetPlayerPosition()
@@ -18,7 +22,7 @@ public class ResetPlayer : MonoBehaviour {
 		}
 		else
 		{
-			playerPos.position = new Vector3(1.63f, 1.6f, -11.36f);
+			playerPos.position = playerSpawn.position;
 		}
 	}
 }

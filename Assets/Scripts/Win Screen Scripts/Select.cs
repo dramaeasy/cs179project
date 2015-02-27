@@ -24,6 +24,11 @@ public class Select : MonoBehaviour {
 			}
 		}
 
+		if(powerup_got)
+		{
+			GhostChase.ghostChaseTimer = 0f;
+		}
+
 		
 	}
 }

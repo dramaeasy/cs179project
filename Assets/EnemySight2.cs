@@ -16,6 +16,7 @@ public class EnemySight2 : MonoBehaviour
 	private PlayerHealth playerHealth;
 	private Transform enemyLoc;
 	private EnemyAI2 enemyai;
+	private AudioSource audio;
 	
 	void Awake()
 	{
@@ -29,6 +30,8 @@ public class EnemySight2 : MonoBehaviour
 		enemyai = GetComponent<EnemyAI2> ();
 		reset = player.GetComponent<ResetPlayer> ();
 		enemyLoc = GetComponent<Transform> ();
+		audio = GetComponent<AudioSource> ();
+		audio.enabled = true;
 	}
 	
 	
@@ -37,6 +40,10 @@ public class EnemySight2 : MonoBehaviour
 		
 		if (other.gameObject == player && !enemyai.enemyDead) 
 		{
+			if(!audio.isPlaying)
+			{
+				audio.Play();
+			}
 			playerInSight = false;
 			
 			Vector3 direction = other.transform.position - transform.position; //Calculate vector from enemy to player
@@ -82,7 +89,8 @@ public class EnemySight2 : MonoBehaviour
 					Application.LoadLevel("GameOverLevel");
 					
 				}
-				
+
+				PlayerLives.lives--;
 				reset.ResetPlayerPosition();
 				nav.enabled = false;
 				enemyLoc.position = new Vector3(0.22f, 0.32f, -1f);

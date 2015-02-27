@@ -13,7 +13,8 @@ public class EnemyAI2 : MonoBehaviour {
 	public bool enemyDead = false;
 	public Vector3 enemySpawn;
 	public Transform [] patrolWaypoints;
-	
+	public bool patrolMode = true;
+
 	private Transform enemyLoc;
 	private EnemySight2 enemySight;                         
 	private NavMeshAgent nav; 
@@ -37,7 +38,7 @@ public class EnemyAI2 : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
 		powerUpActive = false;
-		enemySpawn = new Vector3 (0.22f, 0.32f, -1.7f);
+		enemySpawn = new Vector3 (0.22f, 0.32f, -1f);
 		
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
@@ -46,11 +47,12 @@ public class EnemyAI2 : MonoBehaviour {
 	{
 		if(enemyDead) //State 0: Run back to spawn point
 		{
+			patrolMode = true;
 			enemyDeathTimer += Time.deltaTime;
 			
 			if(enemyDeathTimer >= enemyDeathTime)
 			{
-				if(enemyLoc.position == enemySpawn && Select.powerup_got)
+				if(nav.remainingDistance < 10 && Select.powerup_got)
 				{
 					enemyDead = true; //Keep enemy dead until players powerup runs out
 				}
@@ -67,16 +69,28 @@ public class EnemyAI2 : MonoBehaviour {
 		}
 		else if(Select.powerup_got) //State 1: run away from player because player picked up power up
 		{
+			patrolMode = false;
 			RunAway();
 			//anim.SetBool("playerInSight", true); //set running animation
 		}
-		else if(enemySight.playerInSight || enemySight.playerHeard) //State 2: chase player because he is close
+		else if(enemySight.playerInSight || enemySight.playerHeard || GhostChase.ghostsChasingPlayer) //State 2: chase player because he is close
 		{
+			patrolMode = false;
+
+			if(GhostChase.ghostsChasingPlayer)
+			{
+				chaseSpeed = 8;
+			}
+			else
+			{
+				chaseSpeed = 6;
+			}
 			Chase();
 			//	anim.SetBool("playerInSight", true); //set running animation
 		}
 		else //State 3: patrol waypoints
 		{
+			patrolMode = true;
 			Patroll();
 			//anim.SetBool("playerInSight", false); //set running animation
 		}

@@ -13,6 +13,7 @@ public class EnemyAI : MonoBehaviour {
 	public bool enemyDead = false;
 	public Vector3 enemySpawn;
 	public Transform [] patrolWaypoints;
+	public bool patrolMode = true;
 
 	private Transform enemyLoc;
 	private EnemySight enemySight;                         
@@ -25,8 +26,6 @@ public class EnemyAI : MonoBehaviour {
 	private int wayPointIndex;
 	private float enemyDeathTimer = 0f;
 
-	
-	
 	void Awake()
 	{
 		enemyLoc = GetComponent<Transform> ();
@@ -37,7 +36,7 @@ public class EnemyAI : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
 		powerUpActive = false;
-		enemySpawn = new Vector3 (0.22f, 0.32f, -1.7f);
+		enemySpawn = new Vector3 (0.22f, 0.32f, -1f);
 
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
@@ -46,17 +45,19 @@ public class EnemyAI : MonoBehaviour {
 	{
 		if(enemyDead) //State 0: Run back to spawn point
 		{
+			patrolMode = true;
+
 			enemyDeathTimer += Time.deltaTime;
 
 			if(enemyDeathTimer >= enemyDeathTime)
 			{
-				if(enemyLoc.position == enemySpawn && Select.powerup_got)
+				if(nav.remainingDistance < 10 && Select.powerup_got)
 				{
 					enemyDead = true; //Keep enemy dead until players powerup runs out
 				}
 				else
 				{
-					enemyDeathTime = 0f;
+					enemyDeathTimer = 0f;
 					enemyDead = false;
 				}
 			}
@@ -68,17 +69,27 @@ public class EnemyAI : MonoBehaviour {
 		else if(Select.powerup_got) //State 1: run away from player because player picked up power up
 		{
 			RunAway();
-			//anim.SetBool("playerInSight", true); //set running animation
+			patrolMode = false;
 		}
-		else if(enemySight.playerInSight || enemySight.playerHeard) //State 2: chase player because he is close
+		else if(enemySight.playerInSight || enemySight.playerHeard || GhostChase.ghostsChasingPlayer) //State 2: chase player because he is close
 		{
+			if(GhostChase.ghostsChasingPlayer)
+			{
+				chaseSpeed = 8;
+			}
+			else
+			{
+				chaseSpeed = 6;
+			}
+
 			Chase();
-		//	anim.SetBool("playerInSight", true); //set running animation
+
+			patrolMode = false;
 		}
 		else //State 3: patrol waypoints
 		{
 			Patroll();
-			//anim.SetBool("playerInSight", false); //set running animation
+			patrolMode = true;
 		}
 	}
 	
@@ -98,7 +109,15 @@ public class EnemyAI : MonoBehaviour {
 			
 			if(patrolTimer >= patrolWaitTime)
 			{
-				wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
+				if(Random.Range(1, 10) >= 2) //80% chance of choosing waypoint next to player
+				{
+					Debug.Log ("Red Ghost Detected Player!");
+					wayPointIndex = findClosestWaypointToPlayer();
+				}
+				else
+				{
+					wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
+				}
 				
 				patrolTimer = 0f;
 			}
@@ -110,7 +129,26 @@ public class EnemyAI : MonoBehaviour {
 		
 		nav.destination = patrolWaypoints[wayPointIndex].position;
 	}
-	
+
+	int findClosestWaypointToPlayer()
+	{
+		float shortestDist = -1;
+		int waypointIn = -1;
+
+		for(int i = 0; i < patrolWaypoints.Length; i++)
+		{
+			float distance = Vector3.Distance(patrolWaypoints[i].position, player.position);
+
+			if(distance < shortestDist || shortestDist == -1)
+			{
+				waypointIn = i;
+				shortestDist = distance;
+			}
+		}
+
+		return waypointIn;
+	}
+
 	void RunAway()
 	{
 		if(nav.remainingDistance < nav.stoppingDistance)

@@ -5,6 +5,7 @@ using System.Collections;
 public class PuzzlePiecesUI : MonoBehaviour {
 	
 	Text text;
+	int puzzlePiecesLeft;
 	
 	void Awake()
 	{
@@ -13,6 +14,7 @@ public class PuzzlePiecesUI : MonoBehaviour {
 	
 	void Update () 
 	{
-		text.text = "Square Pieces: " + Select.puz_piece + " / " + Select.totalPuzPieces;
+		puzzlePiecesLeft = Select.totalPuzPieces - Select.puz_piece;
+		text.text = "Puzzle Pieces Left: " + puzzlePiecesLeft;
 	}
 }

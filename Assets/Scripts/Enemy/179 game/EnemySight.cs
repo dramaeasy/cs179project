@@ -7,6 +7,7 @@ public class EnemySight : MonoBehaviour
 	public bool playerInSight;
 	public bool playerHeard;
 	public ResetPlayer reset;
+	public static bool playerLifeGained;
 
 	private GameObject enemy;
 	private NavMeshAgent nav;
@@ -16,6 +17,7 @@ public class EnemySight : MonoBehaviour
 	private PlayerHealth playerHealth;
 	private Transform enemyLoc;
 	private EnemyAI enemyai;
+	private AudioSource audio;
 
 	void Awake()
 	{
@@ -29,6 +31,9 @@ public class EnemySight : MonoBehaviour
 		enemyai = GetComponent<EnemyAI> ();
 		reset = player.GetComponent<ResetPlayer> ();
 		enemyLoc = GetComponent<Transform> ();
+		audio = GetComponent<AudioSource> ();
+		audio.enabled = true;
+		playerLifeGained = false;
 	}
 
 
@@ -37,6 +42,11 @@ public class EnemySight : MonoBehaviour
 
 		if (other.gameObject == player && !enemyai.enemyDead) 
 		{
+			if(!audio.isPlaying)
+			{
+				audio.Play();
+			}
+
 			playerInSight = false;
 
 			Vector3 direction = other.transform.position - transform.position; //Calculate vector from enemy to player
@@ -73,6 +83,8 @@ public class EnemySight : MonoBehaviour
 			if(Select.powerup_got)
 			{
 				enemyai.enemyDead= true;
+				PlayerLives.lives++;
+				playerLifeGained = true;
 			}
 			else
 			{
@@ -83,6 +95,7 @@ public class EnemySight : MonoBehaviour
 
 				}
 
+				PlayerLives.lives--;
 				reset.ResetPlayerPosition();
 				nav.enabled = false;
 				enemyLoc.position = new Vector3(0.22f, 0.32f, -1f);
