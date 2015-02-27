@@ -11,6 +11,7 @@ public class Select : MonoBehaviour {
 	void Update () {
 		if (puz_piece >= totalPuzPieces) {
 			Application.LoadLevel("Win_screen");	
+			puz_piece = 0;
 		}
 		Ray ray = Camera.main.ScreenPointToRay (new Vector3 (Screen.width / 2, Screen.height / 2, 0));
 	
