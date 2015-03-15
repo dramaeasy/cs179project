@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour {
 	public float fieldOfViewAngle = 110f;
 	public float enemyDeathTime = 10f;
 	public bool enemyDead = false;
-	public Vector3 enemySpawn;
+	public Transform enemySpawn;
 	public Transform [] patrolWaypoints;
 	public bool patrolMode = true;
 
@@ -36,7 +36,6 @@ public class EnemyAI : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		wayPointIndex = Random.Range(0, patrolWaypoints.Length - 1); //Choose next random waypoint
 		powerUpActive = false;
-		enemySpawn = new Vector3 (0.22f, 0.32f, -1f);
 
 		nav.destination = patrolWaypoints [wayPointIndex].position;
 	}
@@ -45,6 +44,7 @@ public class EnemyAI : MonoBehaviour {
 	{
 		if(enemyDead) //State 0: Run back to spawn point
 		{
+			Debug.Log ("ENEMY DEAD MODE!");
 			patrolMode = true;
 
 			enemyDeathTimer += Time.deltaTime;
@@ -61,21 +61,21 @@ public class EnemyAI : MonoBehaviour {
 					enemyDead = false;
 				}
 			}
-			else
-			{
-				nav.SetDestination(enemySpawn);
-			}
+
+			nav.SetDestination(enemySpawn.position);
 		}
 		else if(Select.powerup_got) //State 1: run away from player because player picked up power up
 		{
+	Debug.Log ("RUNAWAY MODE!");
 			RunAway();
 			patrolMode = false;
 		}
 		else if(enemySight.playerInSight || enemySight.playerHeard || GhostChase.ghostsChasingPlayer) //State 2: chase player because he is close
 		{
+			Debug.Log ("CHASING PLAYER MODE");
 			if(GhostChase.ghostsChasingPlayer)
 			{
-				chaseSpeed = 8;
+				chaseSpeed = 7;
 			}
 			else
 			{
@@ -88,6 +88,7 @@ public class EnemyAI : MonoBehaviour {
 		}
 		else //State 3: patrol waypoints
 		{
+			Debug.Log ("PATROL MODE!");
 			Patroll();
 			patrolMode = true;
 		}
@@ -106,7 +107,7 @@ public class EnemyAI : MonoBehaviour {
 		if(nav.remainingDistance < nav.stoppingDistance) //Enemy is close to the destination waypoint
 		{
 			patrolTimer += Time.deltaTime;
-			
+			Debug.Log ("Patrol Timer: " + patrolTimer);
 			if(patrolTimer >= patrolWaitTime)
 			{
 				if(Random.Range(1, 10) >= 2) //80% chance of choosing waypoint next to player

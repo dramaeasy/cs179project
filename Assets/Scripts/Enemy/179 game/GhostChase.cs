@@ -12,7 +12,7 @@ public class GhostChase : MonoBehaviour {
 	{
 		ghostChaseTimer = 0;
 		timeToChase = 0;
-		idleTime = 15;
+		idleTime = 10;
 		ghostsChasingPlayer = false;
 	}
 
@@ -37,7 +37,7 @@ public class GhostChase : MonoBehaviour {
 		else
 		{
 			ghostChaseTimer += Time.deltaTime;
-			int timeLeft = (15 - (int)ghostChaseTimer);
+			int timeLeft = (10 - (int)ghostChaseTimer);
 			Debug.Log("Countdown till ghosts chase player: " + timeLeft);
 		}
 	}

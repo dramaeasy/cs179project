@@ -67,7 +67,7 @@ public class EnemySight : MonoBehaviour
 
 			}
 
-			if(CalculatePathLength(player.transform.position) <= 11.0)
+			if(CalculatePathLength(player.transform.position) <= 11.0) //Detect players through walls
 			{
 				playerHeard = true;
 			}
@@ -78,13 +78,16 @@ public class EnemySight : MonoBehaviour
 
 		}
 
-		if(Vector3.Distance(other.transform.position, transform.position) <= 3)
+		if(Vector3.Distance(other.transform.position, transform.position) <= 2.5)
 		{
 			if(Select.powerup_got)
 			{
-				enemyai.enemyDead= true;
-				PlayerLives.lives++;
-				playerLifeGained = true;
+				if(!enemyai.enemyDead)
+				{
+					enemyai.enemyDead= true;
+					PlayerLives.lives++;
+					playerLifeGained = true;
+				}
 			}
 			else
 			{

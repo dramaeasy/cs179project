@@ -16,7 +16,7 @@ public class Flashlight : MonoBehaviour {
 	void Start () {
 		batteryLife = maxBatteryLife;
 		flashlightSource = GetComponent<Light> ();
-		flashlightSource.enabled = false;
+		flashlightSource.enabled = true;
 	}
 	
 	// Update is called once per frame
